@@ -4,8 +4,9 @@ from src.api import app
 client = TestClient(app)
 
 def test_predict_endpoint():
-    response = client.post("/predict", json={"text": "I love it!"})
+    response = client.post("/predict", json={"text": "I love this project!"})
     assert response.status_code == 200
     data = response.json()
     assert data["label"] in ["positive", "neutral", "negative"]
+    assert isinstance(data["confidence"], float)
     assert 0.0 <= data["confidence"] <= 1.0

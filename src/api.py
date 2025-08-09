@@ -17,3 +17,4 @@ class SentimentResponse(BaseModel):
 def predict_sentiment(request: TextRequest):
     label, confidence = analyzer.predict(request.text)
     return SentimentResponse(label=label, confidence=confidence)
+
