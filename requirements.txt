@@ -1,7 +1,6 @@
-fastapi
-uvicorn
 transformers
 torch
-datasets
 pytest
-huggingface_hub
+fastapi
+uvicorn
+requests

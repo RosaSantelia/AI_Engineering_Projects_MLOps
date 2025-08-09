@@ -1,0 +1,11 @@
+from fastapi.testclient import TestClient
+from src.api import app
+
+client = TestClient(app)
+
+def test_predict_endpoint():
+    response = client.post("/predict", json={"text": "I love it!"})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["label"] in ["positive", "neutral", "negative"]
+    assert 0.0 <= data["confidence"] <= 1.0
