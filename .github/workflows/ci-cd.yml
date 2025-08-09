@@ -39,3 +39,13 @@ jobs:
       run: |
         python -m src.evaluation
 
+    
+    - name: Fetch and save monitoring report
+        run: python monitor/auto_monitor.py
+
+    - name: Upload monitoring report artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: monitoring-report
+        path: monitor/monitoring_report.json
+

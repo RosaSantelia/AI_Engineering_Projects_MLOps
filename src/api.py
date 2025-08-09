@@ -1,15 +1,18 @@
-from fastapi import FastAPI, Response
+from fastapi import FastAPI
 from pydantic import BaseModel
-from prometheus_client import Counter, generate_latest, CONTENT_TYPE_LATEST
 from src.inference import SentimentAnalyzer
+from collections import defaultdict
+import threading
 
 app = FastAPI(title="Sentiment Analysis API")
 
 analyzer = SentimentAnalyzer()
 
-# Metriche Prometheus
-REQUEST_COUNT = Counter("request_count", "Numero di richieste", ["endpoint", "method", "http_status"])
-SENTIMENT_DISTRIBUTION = Counter("sentiment_distribution", "Distribuzione sentiment predetto", ["label"])
+# Variabili di monitoraggio thread-safe
+lock = threading.Lock()
+total_requests = 0
+sentiment_counts = defaultdict(int)
+confidence_sums = defaultdict(float)
 
 class TextRequest(BaseModel):
     text: str
@@ -20,14 +23,29 @@ class SentimentResponse(BaseModel):
 
 @app.post("/predict", response_model=SentimentResponse)
 def predict_sentiment(request: TextRequest):
+    global total_requests, sentiment_counts, confidence_sums
     label, confidence = analyzer.predict(request.text)
-    # Aggiorna metriche
-    REQUEST_COUNT.labels(endpoint="/predict", method="POST", http_status="200").inc()
-    SENTIMENT_DISTRIBUTION.labels(label=label).inc()
+
+    with lock:
+        total_requests += 1
+        sentiment_counts[label] += 1
+        confidence_sums[label] += confidence
+
     return SentimentResponse(label=label, confidence=confidence)
 
-@app.get("/metrics")
-def metrics():
-    data = generate_latest()
-    return Response(content=data, media_type=CONTENT_TYPE_LATEST)
+@app.get("/monitoring")
+def get_monitoring():
+    with lock:
+        avg_confidence = {
+            label: (confidence_sums[label] / sentiment_counts[label]) if sentiment_counts[label] > 0 else 0
+            for label in sentiment_counts
+        }
+        return {
+            "total_requests": total_requests,
+            "sentiment_counts": dict(sentiment_counts),
+            "average_confidence_per_label": avg_confidence
+        }
+
+
+
 
