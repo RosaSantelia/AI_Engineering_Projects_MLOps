@@ -22,21 +22,6 @@ L'obiettivo è automatizzare e migliorare il monitoraggio della reputazione onli
 - Monitoraggio: sistema custom semplice basato su endpoint REST per raccogliere metriche di performance e distribuzione sentiment, con report salvati in JSON
 
 - CI/CD: GitHub Actions per automazione completa (test, valutazione, deploy, monitoraggio)
-  
-
-## Struttura del Repository
-
-src/ : codice sorgente (modello, API, inferenza, monitoraggio)
-
-tests/ : test automatici con pytest
-
-monitor/ : script di monitoraggio e reportistica
-
-.github/workflows/ci-cd.yml : pipeline CI/CD GitHub Actions
-
-requirements.txt : dipendenze Python
-
-README.md : questa documentazione
 
 
 ## Risultati
