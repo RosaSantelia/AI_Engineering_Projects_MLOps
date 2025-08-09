@@ -6,7 +6,7 @@ import os
 
 MODEL_NAME = "cardiffnlp/twitter-roberta-base-sentiment-latest"
 
-# Etichette corrispondenti (ordine importante)
+# Etichette corrispondenti 
 LABELS = ["negative", "neutral", "positive"]
 
 class SentimentAnalyzer:

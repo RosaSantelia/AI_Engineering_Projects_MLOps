@@ -1,6 +1,7 @@
 transformers
+datasets
 torch
-pytest
+scikit-learn
 fastapi
 uvicorn
-requests
+pytest
