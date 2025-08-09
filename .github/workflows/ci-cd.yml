@@ -39,17 +39,3 @@ jobs:
       run: |
         python -m src.evaluation
 
-    # Esempio di deploy su HuggingFace Spaces
-    - name: Deploy to HuggingFace Space
-      if: github.ref == 'refs/heads/main'
-      env:
-        HF_TOKEN: ${{ secrets.HF_TOKEN }}
-      run: |
-        git config --global user.email "rosa.santelia@outlook.it"
-        git config --global user.name "Rosa Santelia"
-        git clone https://huggingface.co/spaces/RosaSantelia/rosa-twitter-sentiment
-        cp -r ./* your-space/
-        cd your-space
-        git add .
-        git commit -m "CI deploy"
-        git push origin main
