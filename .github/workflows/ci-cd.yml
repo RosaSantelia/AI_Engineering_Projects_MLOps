@@ -32,20 +32,21 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run tests
+      run: pytest tests/
+
+    - name: Start API in background
       run: |
-        pytest tests/
+        nohup uvicorn api:app --host 0.0.0.0 --port 8001 &
+        sleep 5
 
     - name: Run evaluation script
-      run: |
-        python -m src.evaluation
+      run: python -m src.evaluation
 
-    
     - name: Fetch and save monitoring report
-        run: python monitor/auto_monitor.py
+      run: python monitor/auto_monitor.py
 
     - name: Upload monitoring report artifact
       uses: actions/upload-artifact@v3
       with:
         name: monitoring-report
         path: monitor/monitoring_report.json
-
