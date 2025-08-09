@@ -7,12 +7,19 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
-
+  test-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
+
+    - name: Cache pip
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -27,7 +34,22 @@ jobs:
     - name: Run tests
       run: |
         pytest tests/
-        
+
     - name: Run evaluation script
       run: |
-        python src/evaluation.py
+        python -m src.evaluation
+
+    # Esempio di deploy su HuggingFace Spaces
+    - name: Deploy to HuggingFace Space
+      if: github.ref == 'refs/heads/main'
+      env:
+        HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      run: |
+        git config --global user.email "rosa.santelia@outlook.it"
+        git config --global user.name "Rosa Santelia"
+        git clone https://huggingface.co/spaces/RosaSantelia/rosa-twitter-sentiment
+        cp -r ./* your-space/
+        cd your-space
+        git add .
+        git commit -m "CI deploy"
+        git push origin main
