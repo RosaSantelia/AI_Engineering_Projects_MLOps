@@ -15,7 +15,7 @@ L'obiettivo è automatizzare e migliorare il monitoraggio della reputazione onli
 
 - Modello: utilizzo del modello cardiffnlp/twitter-roberta-base-sentiment-latest per sfruttare la robustezza di un modello RoBERTa fine-tuned su dati Twitter
 
-- Dataset: dataset pubblico test-eval di testi social con etichette sentiment (positivo, neutro, negativo) per training e validazione
+- Dataset: dataset pubblico test-eval di testi social con etichette sentiment (positivo, neutro, negativo) per training e validazione 
 
 - Architettura software: API REST realizzata con FastAPI per facilità d’integrazione e scalabilità
 
